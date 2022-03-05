@@ -12,5 +12,7 @@ public class Scanner{
         while((s = br.readLine()) != null){
             System.out.println(s);
         }
+
+        br.close();
     }
 }
