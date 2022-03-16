@@ -3,70 +3,19 @@
  * Term:        Spring 2022
  * Name:        Alexa Garcia
  * Instructor:   Sharon Perry
- * Project:     Deliverable P1 Scanner
+ * Project:     Deliverable P2 Scanner
  */
 
+public class scanner{
+    private String[] tokens;
+    private String[] tokensID;
 
-import java.io.*;
-
-import java.util.ArrayList;
-
-public class Scanner{
-
-    //token table array
-    public static String[] tokens = {"function", "if", "else", "while", "for", "print",
-    "=","<=","<",">=",">","==","~=","+","-","*","/", "end"};
-
-    //token descriptor table array
-    public static String[] tokensID = {"FUNC_KEY", "IF_KEY", "ELSE_KEY", "WHILE_KEY", "FOR_KEY", "PRINT_KEY",
-    "ASSIGN_OP", "LE_OP", "LT_OP", "GE_OP", "GT_OP", "EQ_OP", "NE_OP", "ADD_OP", "SUB_OP", "MUL_OP", "DIV_OP", "END_KEY"};
-
-    public static void main(String[] args) throws Exception{
-        //begin reading in lines
-        File f = new File("Test1.jl");
-        BufferedReader br = new BufferedReader(new FileReader(f));
-
-        //arraylist to store all lines and token ids
-        ArrayList<String> lines = new ArrayList<String>();
-
-        //string to store each line read from buffered reader
-        String s;
-        //int variable for start of function, used to indicate the function() method has been used
-        int funcStart = 0;
-        //count variable to count the number of lines in the file
-        int count = 1;
-
-        while((s = br.readLine()) != null){
-            String str = s;
-            //checks if the function has started
-            if(isSubstring("function", str)){
-                funcStart++;
-            }
-            //if the function has started, begin lookup
-            if(funcStart > 0){
-                //print out line number
-                System.out.println("Line: " + count + " ");
-                //split string into tokens (omit spaces) and store in array splitStr
-                String[] splitStr = str.trim().split("\\s+");   
-                //go through each splitStr index and use lookup function to identify the tokens
-                for(int i = 0; i < splitStr.length; i++){
-                    String lineOut = lookup(splitStr[i]);
-                    //print the lookup output
-                    System.out.println(lineOut);
-                    //add lookup output to array list "lines"
-                    lines.add(lineOut);
-                }
-            }
-            //increase count variable for counting lines
-            count++;
-            System.out.println();
-        }
-
-        //close buffered reader
-        br.close();
+    scanner(String[] tokens, String[] tokensID){
+        this.tokens = tokens;
+        this.tokensID = tokensID;
     }
 
-    public static String lookup(String name){
+    public String lookup(String name){
         for(int i = 0; i < tokens.length; i++){
             //uses .equals to check if the string matches any token array entry
             if(name.equals(tokens[i])){
@@ -87,7 +36,7 @@ public class Scanner{
     }
 
     //Checks if the input string is a number and returns true if yes and false if no
-    public static boolean isNumeric(String strNum) {
+    public boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
         }
@@ -100,7 +49,7 @@ public class Scanner{
     }
 
     //Checks to see if string s1 is a substring of string s2 and returns true if yes and false if no
-    static boolean isSubstring(String s1, String s2){
+    public boolean isSubstring(String s1, String s2){
         int M = s1.length();
         int N = s2.length();
  
