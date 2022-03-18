@@ -24,7 +24,7 @@ public class driver {
         //arraylist to store all lines and token ids
         ArrayList<String> lines = new ArrayList<String>();
 
-        System.out.println("\n\nBeginning Scanner...");
+        System.out.println("\n\nBeginning Scanner...\n");
 
         //begin reading in lines
         File f = new File("Test1.jl");
@@ -67,9 +67,17 @@ public class driver {
         //close buffered reader
         br.close();
 
-        System.out.println("...End Scanner");
+        System.out.println("...End Scanner\n\n\n\nBeginning Parser...\n");
 
+        for(int i = 0; i < lines.size(); i++){
+            String value = lines.get(i).substring(0, 4);
+            int num = Integer.parseInt(value);
 
+            System.out.println(num);
+            /*switch(){
+                case 
+            }*/
+        }
 
         
     }
