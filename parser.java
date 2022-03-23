@@ -6,10 +6,26 @@
  * Project:     Deliverable P2 Parser
  */
 
+import java.util.ArrayList;
+
 public class parser {
     
-    public parser(){
-        
+    private ArrayList<String> lines = new ArrayList<String>();
+
+    public parser(ArrayList<String> lines){
+        this.lines = lines;
+    }
+
+    public void start_parse(){
+        for(int i = 0; i < lines.size(); i++){
+            String value = lines.get(i).substring(0, 4);
+            int num = Integer.parseInt(value);
+
+            System.out.println(num);
+            switch(num){
+                
+            }
+        }
     }
 
     public void program(){
