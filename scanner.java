@@ -10,23 +10,23 @@ import java.util.ArrayList;
 import java.io.*;
 
 public class scanner{
-    private String[] tokens;
-    private String[] tokensID;
-    private ArrayList<String> lines = new ArrayList<String>();
+    private String[] tokens;                                    //array for tokens
+    private String[] tokensID;         
+    private String file_name;                         //array for tokenIDs
+    private ArrayList<String> lines = new ArrayList<String>();  //arraylist to store all lines and token ids
 
-    scanner(String[] tokens, String[] tokensID){
+    //constructor method to set lookup arrays
+    scanner(String[] tokens, String[] tokensID, String file_name){
         this.tokens = tokens;
         this.tokensID = tokensID;
+        this.file_name = file_name;
     }
 
     public void start_scan() throws Exception{
-        //arraylist to store all lines and token ids
-        
-
-        System.out.println("\n\nBeginning Scanner...\n");
+        System.out.println("\n\n\n\nBeginning Scanner...\n");
 
         //begin reading in lines
-        File f = new File("Test1.jl");
+        File f = new File(file_name);
         BufferedReader br = new BufferedReader(new FileReader(f));
 
         //string to store each line read from buffered reader
@@ -65,6 +65,8 @@ public class scanner{
 
         //close buffered reader
         br.close();
+
+        System.out.println("...End Scanner");
     }
     //return 
     public ArrayList<String> getLines(){
@@ -79,17 +81,24 @@ public class scanner{
                 return (i + 5000) + " " + tokensID[i];
             //uses isNumeric to check if the string is a number
             }else if(isNumeric(name)){
-                return 5018 + " LITERAL_INT " + name;
+                return 5019 + " LITERAL_INT " + name;
             //uses isSubstring to check if the string is a print function
             }else if(isSubstring("print", name)){
-                return 5005 + " " + tokensID[5];
+                lines.add(5005 + tokensID[5]);
+                if(name.charAt(5) == '('){
+                    lines.add(5021 + " OPEN_PARETH");
+                }
+                lines.add(lookup(name.substring(6, name.length()-1)));
+                if(name.charAt(name.length()-1) == ')'){
+                    return 5022 + " CLOSE_PARETH";
+                }
             //uses .matches to check if the string is a letter
             }else if(name.matches("[A-Za-z]{1}")){
-                return 5019 + " ID " + name;
+                return 5020 + " ID " + name;
             }
         }
         //if not any of the above cases, it must be a function id so return this for function ids
-        return 5019 + " ID " + name.charAt(0);
+        return 5020 + " ID " + name.charAt(0);
     }
 
     //Checks if the input string is a number and returns true if yes and false if no
