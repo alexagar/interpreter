@@ -241,6 +241,7 @@ public class parser {
         }
     }
 
+    //returns relative
     public String relative_op(int token){
         switch(token){
             case 5007:
@@ -259,6 +260,7 @@ public class parser {
         return "Error: expected relative_op is not present or defined incorrectly";
     }
 
+    //checks if an arithmetic expression is present, if not, returns false
     public boolean check_arithmetic_expression(int token){
         if (token == 5020 || token == 5019 || check_arithmetic_op(token)){
             return true;
@@ -267,6 +269,7 @@ public class parser {
         }
     }
 
+    //returns the arithmetic expression present in the parameter, otherwise returns Error
     public String arithmetic_expression(int token){
         switch(token){
             case 5020:
@@ -281,6 +284,7 @@ public class parser {
         return "Error: expected arithemetic_expression is not present or defined incorrectly";
     }
 
+    //checks if an arithmetic_op is present, if not, returns false
     public boolean check_arithmetic_op(int token){
         if(token == 5013 || token == 5014 || token == 5015 || token == 5016){
             return true;
@@ -289,6 +293,7 @@ public class parser {
         }
     }
 
+    //returns the arithmetic_op present in given parameter or returns Error if not found
     public String arithmetic_op(int token){
         switch(token){
             case 5013:
@@ -303,6 +308,7 @@ public class parser {
         return "Error: expected arithmetic_op is not present or defined incorrectly";
     }
 
+    //gets index of the next integer that equals parameter "tokenFind"
     public int getIndexOf(int indexStart, int tokenFind, int[] tokens){
         boolean found = false;
         while(!found){
