@@ -4,6 +4,8 @@
  * Name:        Alexa Garcia
  * Instructor:   Sharon Perry
  * Project:     Deliverable P2 Parser
+ * 
+ * OPTION 2 WAS CHOSEN: 10 POINTS OFF FOR ONE WEEK EXTENSION
  */
 
 import java.util.ArrayList;
@@ -34,7 +36,6 @@ public class scanner{
         //int variable for start of function, used to indicate the function() method has been used
         int funcStart = 0;
         //count variable to count the number of lines in the file
-        int count = 1;
 
         while((s = br.readLine()) != null){
             String str = s;
@@ -44,23 +45,20 @@ public class scanner{
             }
             //if the function has started, begin lookup
             if(funcStart > 0){
-                //print out line number
-                System.out.println("Line: " + count + " ");
                 //split string into tokens (omit spaces) and store in array splitStr
                 String[] splitStr = str.trim().split("\\s+");   
                 //go through each splitStr index and use lookup function to identify the tokens
                 for(int i = 0; i < splitStr.length; i++){
                     String lineOut = lookup(splitStr[i]);
-                    //print the lookup output
-                    System.out.println(lineOut);
                     //add lookup output to array list "lines"
                     lines.add(lineOut);
                 }
-                System.out.println();
             }
             //increase count variable for counting lines
-            count++;
-           
+        }
+
+        for(int i = 0; i < lines.size(); i++){
+            System.out.println(lines.get(i));
         }
 
         //close buffered reader
@@ -84,21 +82,27 @@ public class scanner{
                 return 5019 + " LITERAL_INT " + name;
             //uses isSubstring to check if the string is a print function
             }else if(isSubstring("print", name)){
-                lines.add(5005 + tokensID[5]);
+                lines.add(5005 + " " + tokensID[5]);
+
                 if(name.charAt(5) == '('){
-                    lines.add(5021 + " OPEN_PARETH");
+                    lines.add(5021 + " " + tokensID[21]);
                 }
                 lines.add(lookup(name.substring(6, name.length()-1)));
                 if(name.charAt(name.length()-1) == ')'){
-                    return 5022 + " CLOSE_PARETH";
+                    return 5022 + " " + tokensID[22];
                 }
             //uses .matches to check if the string is a letter
             }else if(name.matches("[A-Za-z]{1}")){
                 return 5020 + " ID " + name;
+            //check for function identifier in the format 'a()' (or any other letter)
+            }else if(name.substring(0,1).matches("[A-Za-z]{1}") && name.charAt(1) == '(' && name.charAt(2) == ')'){
+                lines.add(5020 + " ID " + name.charAt(0));
+                lines.add(5021 + " " + tokensID[21]);
+                return 5022 + " " + tokensID[22];
             }
         }
         //if not any of the above cases, it must be a function id so return this for function ids
-        return 5020 + " ID " + name.charAt(0);
+        return "0000 UNRECOGNIZED TOKEN";
     }
 
     //Checks if the input string is a number and returns true if yes and false if no
