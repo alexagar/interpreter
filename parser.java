@@ -17,6 +17,7 @@ public class parser {
     private int start = 0;
     private int end = 0;
 
+    //constructor to initialize lines
     public parser(ArrayList<String> lines){
         this.lines = lines;
     }
@@ -27,6 +28,7 @@ public class parser {
 
         int[] tokens = new int[lines.size()];
         
+        //takes in first 4 digits of every line of ArrayList "lines" and creates an int array from it called "tokens"
         for(int i = 0; i < lines.size(); i++){
             String value = lines.get(i).substring(0, 4);
             int num = Integer.parseInt(value);
@@ -34,16 +36,22 @@ public class parser {
             tokens[i] = num;
         }
 
+        //set end index value to be the last index of tokens
         end = tokens.length;
+
+        //run program with input tokens to start the parse algorithm
         program(tokens);
 
+        //print out every line of parserOut
         for(int i = 0; i < parserOut.size(); i++){
             System.out.println(parserOut.get(i));
         }
 
+        //print statement to signify end of parser algorithm
         System.out.println("\n...End Parser");
     }
 
+    //check program grammar
     public void program(int[] tokens){
         if(tokens[0] == 5000){
             if(tokens[1] == 5020){
@@ -70,13 +78,15 @@ public class parser {
         }
     }
 
+    //check block grammar
     public void block(int[] tokens){
         parserOut.add(block_out(tokens));
-        for(int i = start; i < tokens.length; i++){
+        for(int i = start; i < end; i++){
             statement(tokens);
         }
     }
 
+    //method for printing block grammar (counts statements present)
     public String block_out(int[] tokens){
         String out = "<block> ->";
         for(int i = start; i < end; i++){
@@ -96,6 +106,7 @@ public class parser {
         return out;
     } 
 
+    //method that checks for a statement
     public void statement(int[] tokens){
         if(tokens[start] == 5001){
             start++;
@@ -120,19 +131,28 @@ public class parser {
         }
     } 
 
+    //check if statement grammar, print error if not correct, print if statement out if it is correct
     public void if_statement(int[] tokens){
-        int ifIndex = parserOut.size();
+        int index = parserOut.size();
+        //check for boolean
         if(check_boolean(tokens)){
             boolean_expression(tokens);
+            //check for then key
             if(tokens[start+3] == 5018){
                 start += 4;
                 end = getIndexOf(start, 5002, tokens);
+                //get block
                 block(tokens);
+                //check for else key
                 if(tokens[start] == 5002){
                     start++;
+                    end = getIndexOf(start, 5017, tokens);
+                    //do block
                     block(tokens);
+                    //check for end key
                     if(tokens[start] == 5017){
-                        parserOut.add(ifIndex,"<if_statement> -> if <boolean_expression> then <block> else <block> end");
+                        //add line to parserOut
+                        parserOut.add(index,"<if_statement> -> if <boolean_expression> then <block> else <block> end");
                         start++;
                     }else{
                         parserOut.add("Error: expected 'end' after <block>");
@@ -148,9 +168,13 @@ public class parser {
         }
     }
 
+    //check assignment statement grammar
     public void assignment_statement(int[] tokens){
+        //check for = sign
         if(tokens[start] == 5006){
+            //check for arithmetic expression
             if(check_arithmetic_expression(tokens[start +1])){
+                //add lines to parserOut
                 parserOut.add("<assignment_statement> -> id <assignment_operator> <arithmetic_expression>");
                 parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start +1]) + ">");
                 start += 2;
@@ -162,27 +186,51 @@ public class parser {
         }
     }
 
+    //check while statement grammar
     public void while_statement(int[] tokens){
+        int index = parserOut.size();
         if(check_boolean(tokens)){
+            boolean_expression(tokens);
             if(tokens[start+3] == 5023){
-                
+                start += 3;
+                end = getIndexOf(start, 5017, tokens);
+                block(tokens);
+                if(tokens[start] == 5017){
+                    parserOut.add(index, "<while_statement> -> while <boolean_expression> do <block> end");
+                }
+            }else{
+                parserOut.add("Error: expected 'do' after <boolean_expression>");
             }
         }else{
             parserOut.add("Error: expected <boolean_expression> after while");
         }
     }
 
+    //check repeat statement grammar
     public void repeat_statement(int[] tokens){
-        /*if(){
-            if(){
-
+        int index = parserOut.size();
+        end = getIndexOf(start, 5024, tokens);
+        block(tokens);
+        if(tokens[start] == 5024){
+            start++;
+            if(check_boolean(tokens)){
+                parserOut.add(index, "<repeat_statement> -> repeat <block> until <boolean expression>");
+                boolean_expression(tokens);
+            }else{
+                parserOut.add("Error: expected <boolean_expression> after until");
             }
-        }*/
+        }else{
+            parserOut.add("Error: expected 'until' after <block>");
+        }
     }
 
+    //check print grammar
     public void print_statement(int[] tokens){
+        //check for open parenthesis
         if(tokens[start] == 5021){
+            //check for arithmetic expression
             if(check_arithmetic_expression(tokens[start + 1])){
+                //check for 
                 if(tokens[start + 2] == 5022){
                     parserOut.add("<print statement> -> print ( <arithmetic_expression> )");
                     parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start + 1]) + ">");
@@ -198,6 +246,7 @@ public class parser {
         }
     }
 
+    //check if a boolean expression is present
     public boolean check_boolean(int[] tokens){
         if(check_relative_op(tokens[start])){
             if(check_arithmetic_expression(tokens[start+1])){
@@ -214,6 +263,7 @@ public class parser {
         }
     }
 
+    //check boolean expression grammar
     public void boolean_expression(int[] tokens){
         if(check_relative_op(tokens[start])){
             if(check_arithmetic_expression(tokens[start+1])){
@@ -233,6 +283,7 @@ public class parser {
         }
     }
 
+    //checks if a relative op is present in the give token, if not return false
     public boolean check_relative_op(int token){
         if(token == 5007 || token == 5008 || token == 5009 || token == 5010 || token == 5011 || token == 5012){
             return true;
@@ -241,7 +292,7 @@ public class parser {
         }
     }
 
-    //returns relative
+    //returns relative operator or error if unrecognized token
     public String relative_op(int token){
         switch(token){
             case 5007:
