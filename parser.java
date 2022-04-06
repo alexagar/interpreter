@@ -128,6 +128,8 @@ public class parser {
             start++;
             parserOut.add("<statement> -> <print_statement>");
             print_statement(tokens);
+        }else{
+            parserOut.add("Error: Unrecognized statement");
         }
     } 
 
@@ -173,10 +175,12 @@ public class parser {
         //check for = sign
         if(tokens[start] == 5006){
             //check for arithmetic expression
+            System.out.println(tokens[start]);
             if(check_arithmetic_expression(tokens[start +1])){
                 //add lines to parserOut
                 parserOut.add("<assignment_statement> -> id <assignment_operator> <arithmetic_expression>");
-                parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start +1]) + ">");
+                parserOut.add("<assignment operator> -> <asignment operator>");
+                parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start +1], tokens[start+2], tokens[start+3]) + ">");
                 start += 2;
             }else{
                 parserOut.add("Error: expected <arithmetic_expression> after <assignment_operator>");
@@ -192,7 +196,7 @@ public class parser {
         if(check_boolean(tokens)){
             boolean_expression(tokens);
             if(tokens[start+3] == 5023){
-                start += 3;
+                start += 4;
                 end = getIndexOf(start, 5017, tokens);
                 block(tokens);
                 if(tokens[start] == 5017){
@@ -233,7 +237,7 @@ public class parser {
                 //check for 
                 if(tokens[start + 2] == 5022){
                     parserOut.add("<print statement> -> print ( <arithmetic_expression> )");
-                    parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start + 1]) + ">");
+                    parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start + 1], tokens[start + 2], tokens[start + 3]) + ">");
                     start += 3;
                 }else{
                     parserOut.add("Error: expected ')' after <arithmetic_expression>");
@@ -270,8 +274,8 @@ public class parser {
                 if(check_arithmetic_expression(tokens[start+2])){
                     parserOut.add("<boolean_expression> -> <relative_op> <arithmetic_expression> <arithmetic_expression>");
                     parserOut.add("<relative_op> -> <" + relative_op(tokens[start]) + ">");
-                    parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start+1]) + ">");
-                    parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start+2]) + ">");
+                    parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start+1], tokens[start+2], tokens[start+3]) + ">");
+                    parserOut.add("<arithmetic_expression> -> <" + arithmetic_expression(tokens[start+2], tokens[start+3], tokens[start+4]) + ">");
                 }else{
                     parserOut.add("Error: expected <arithmetic_expression> after <relative_op>");
                 }
@@ -321,16 +325,16 @@ public class parser {
     }
 
     //returns the arithmetic expression present in the parameter, otherwise returns Error
-    public String arithmetic_expression(int token){
-        switch(token){
+    public String arithmetic_expression(int token1, int token2, int token3){
+        switch(token1){
             case 5020:
                 return "id";
             case 5019:
                 return "literal integer";
         }
 
-        if(check_arithmetic_op(token)){
-            return arithmetic_op(token);
+        if(check_arithmetic_op(token1) && check_arithmetic_expression(token2) && check_arithmetic_expression(token3) ){
+            return "arithmetic_op> <arithmetic_expression> <arithmetic_expression>";
         }
         return "Error: expected arithemetic_expression is not present or defined incorrectly";
     }
