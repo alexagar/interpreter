@@ -51,6 +51,10 @@ public class parser {
         System.out.println("\n...End Parser");
     }
 
+    public ArrayList<String> getParserOut(){
+        return parserOut;
+    }
+
     //check program grammar
     public void program(int[] tokens){
         if(tokens[0] == 5000){
@@ -128,8 +132,6 @@ public class parser {
             start++;
             parserOut.add("<statement> -> <print_statement>");
             print_statement(tokens);
-        }else{
-            parserOut.add("Error: Unrecognized statement");
         }
     } 
 
@@ -175,7 +177,7 @@ public class parser {
         //check for = sign
         if(tokens[start] == 5006){
             //check for arithmetic expression
-            System.out.println(tokens[start]);
+            
             if(check_arithmetic_expression(tokens[start +1])){
                 //add lines to parserOut
                 parserOut.add("<assignment_statement> -> id <assignment_operator> <arithmetic_expression>");
@@ -334,6 +336,7 @@ public class parser {
         }
 
         if(check_arithmetic_op(token1) && check_arithmetic_expression(token2) && check_arithmetic_expression(token3) ){
+            start+=3;
             return "arithmetic_op> <arithmetic_expression> <arithmetic_expression>";
         }
         return "Error: expected arithemetic_expression is not present or defined incorrectly";

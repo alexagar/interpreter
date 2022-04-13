@@ -1,8 +1,8 @@
 public class interpreter {
     
 
-    interpreter(){
-
+    public interpreter(){
+        
     }
 
     

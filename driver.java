@@ -22,6 +22,7 @@ public class driver {
         "DIV_OP", "END_KEY", "THEN_KEY", "LIT_INT", "ID", "OPEN_PARENTH", "CLOSE_PARENTH", "DO_KEY", "UNTIL_KEY"};
 
         ArrayList<String> lines = new ArrayList<String>();
+        ArrayList<String> parserOut = new ArrayList<String>();
 
         //create scanner object to begin scanning
         scanner scan = new scanner(tokens, tokensID, "Test2.jl");
@@ -33,6 +34,7 @@ public class driver {
         //create parser object to start parsing
         parser parse = new parser(lines);
         parse.start_parse();
+        parserOut = parse.getParserOut();               //update parserOut variable to have parser output
         
 
     }
