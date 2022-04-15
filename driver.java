@@ -25,7 +25,7 @@ public class driver {
         ArrayList<String> parserOut = new ArrayList<String>();
 
         //create scanner object to begin scanning
-        scanner scan = new scanner(tokens, tokensID, "Test2.jl");
+        scanner scan = new scanner(tokens, tokensID, "Test1.jl");
         scan.start_scan();                              //begin scanning
         lines = scan.getLines();                        //update lines variable to have scanned in tokens
         
@@ -36,6 +36,10 @@ public class driver {
         parse.start_parse();
         parserOut = parse.getParserOut();               //update parserOut variable to have parser output
         
+
+        //create interpreter object to start interpretting
+        interpreter interp = new interpreter(lines, parserOut);
+        interp.start_interpret();
 
     }
 }
